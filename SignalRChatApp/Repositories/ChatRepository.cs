@@ -54,7 +54,8 @@ namespace SignalRChatApp.Repositories
             var roomModel = new RoomViewModel
             {
                 RoomId = room.id,
-                Name = room.Name
+                Name = room.Name,
+                Messages = messages
             };
             return roomModel;
 

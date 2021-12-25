@@ -11,7 +11,7 @@
         @foreach (var room in Model)
         {
         <div class="row">
-            <a class="btn btn-primary col-md-12" asp-controller="Chat" asp-action="JoinRoom" asp-route-id="@room.id">
+            <a class="btn btn-primary col-md-12" asp-controller="Chat" asp-action="Room" asp-route-id="@room.id">
                 @room.Name
             </a>
         </div>

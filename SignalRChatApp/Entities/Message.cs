@@ -15,5 +15,6 @@ namespace SignalRChatApp.Entities
         public string RoomId { get; set; }
         public string MessageText { get; set; }
         public string UserName { get; set; }
+        public DateTime Time { get; set; }
     }
 }

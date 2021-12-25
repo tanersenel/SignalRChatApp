@@ -26,10 +26,10 @@ namespace SignalRChatApp.Controllers
             var rooms = _chatRepository.GetRooms();
             return View(rooms.Result);
         }
-        public IActionResult JoinRoom(string id)
+        public IActionResult Room(string id)
         {
-            var rooms = _chatRepository.GetRooms();
-            return View(rooms);
+            var rooms = _chatRepository.GetRoomWithMessages(id);
+            return View(rooms.Result);
         }
         [HttpPost]
         public IActionResult CreateRoom(string name)

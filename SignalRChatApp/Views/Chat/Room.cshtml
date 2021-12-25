@@ -1,0 +1,19 @@
+﻿@model RoomViewModel
+
+<div class="col-md-12">
+    <div class="chat-body">
+        @foreach (var message in Model.Messages)
+        {
+            <div class="message">
+                <header>@message.UserName :</header>
+                <p>@message.MessageText</p>
+                <footer>@message.Time</footer>
+            </div>
+        }
+    </div>
+    <form class="chat-input" onsubmit="sendMessage(event)" asp-controller="Home" asp-action="CreateMessage">
+        <input type="hidden" name="roomId" value="@Model.RoomId ">
+        <input type="text" name="message" id="message-input">
+        <button type="submit">Send</button>
+    </form>
+</div> 
