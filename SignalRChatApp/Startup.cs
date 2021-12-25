@@ -4,6 +4,10 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using SignalRChatApp.Data;
+using SignalRChatApp.Repositories;
+using SignalRChatApp.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +27,11 @@ namespace SignalRChatApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<ChatDatabaseSettings>(Configuration.GetSection(nameof(ChatDatabaseSettings)));
+            services.AddSingleton<IChatDatabaseSettings>(sp => sp.GetRequiredService<IOptions<ChatDatabaseSettings>>().Value);
+            services.AddTransient<IChatContext, ChatContext>();
+            services.AddTransient<IChatRepository, ChatRepository>();
+
             services.AddControllersWithViews();
         }
 
@@ -35,7 +44,7 @@ namespace SignalRChatApp
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Chat/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
@@ -50,7 +59,7 @@ namespace SignalRChatApp
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Chat}/{action=Index}/{id?}");
             });
         }
     }
