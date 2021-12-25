@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.32002.261
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalRChatApp", "SignalRChatApp\SignalRChatApp.csproj", "{78D6C9C7-0B20-435B-A986-E9A8DCF77BE7}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{12463957-2D08-4147-92A6-30E2444F4E74}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{78D6C9C7-0B20-435B-A986-E9A8DCF77BE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78D6C9C7-0B20-435B-A986-E9A8DCF77BE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78D6C9C7-0B20-435B-A986-E9A8DCF77BE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12463957-2D08-4147-92A6-30E2444F4E74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12463957-2D08-4147-92A6-30E2444F4E74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12463957-2D08-4147-92A6-30E2444F4E74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12463957-2D08-4147-92A6-30E2444F4E74}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

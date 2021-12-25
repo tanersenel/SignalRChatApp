@@ -1,0 +1,23 @@
+version: '3.4'
+
+services:
+  signalrdb:
+   container_name: signalrdb
+   restart: always
+   volumes:
+    - ${WEBAPP_STORAGE_HOME}/site:/data/db
+    #- ./data:/data/db
+   ports:
+    - "27017:27017"
+  signalrchatapp:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - "ChatDatabaseSettings:ConnectionString=mongodb://signalrdb:27017"
+    depends_on:
+        - signalrdb
+    ports:
+      - "8001:80"
+      - "443"
+    volumes:
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
