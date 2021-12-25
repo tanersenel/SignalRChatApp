@@ -12,7 +12,7 @@ services:
   signalrchatapp:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_URLS=http://+:80
       - "ChatDatabaseSettings:ConnectionString=mongodb://signalrdb:27017"
     depends_on:
         - signalrdb
