@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using SignalRChatApp.Entities;
 using System;
 using System.Collections.Generic;
@@ -25,15 +26,18 @@ namespace SignalRChatApp.Data
                new Room
                {
                    Name="Room 1",
+                   Messages=new List<Message>(){ new Message {UserName="Admin", MessageText="Welcome To Room1",Time=DateTime.Now, id = ObjectId.GenerateNewId()  } }
                  
                },
                new Room
                {
-                   Name ="Room 2"
+                   Name ="Room 2",
+                    Messages=new List<Message>(){ new Message { UserName = "Admin", MessageText ="Welcome To Room2",Time=DateTime.Now, id = ObjectId.GenerateNewId() } }
                },
                 new Room
                {
-                   Name ="Room 3"
+                   Name ="Room 3",
+                  Messages=new List<Message>(){ new Message { UserName = "Admin", MessageText ="Welcome To Room3",Time=DateTime.Now, id = ObjectId.GenerateNewId() } }
                }
            };
         }

@@ -11,8 +11,7 @@ namespace SignalRChatApp.Entities
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string id { get; set; }
-        public string RoomId { get; set; }
+        public ObjectId id { get; set; }
         public string MessageText { get; set; }
         public string UserName { get; set; }
         public DateTime Time { get; set; }

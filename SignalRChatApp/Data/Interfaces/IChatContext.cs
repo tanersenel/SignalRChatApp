@@ -9,7 +9,6 @@ namespace SignalRChatApp.Data
 {
     public interface IChatContext
     {
-        IMongoCollection<Message> Messages { get; }
         IMongoCollection<Room> Rooms { get; }
     }
 }

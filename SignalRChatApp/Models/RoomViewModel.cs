@@ -8,8 +8,7 @@ namespace SignalRChatApp.Models
 {
     public class RoomViewModel
     {
-        public string RoomId { get; set; }
-        public string Name { get; set; }
-        public List<Message> Messages { get; set; }
+        public Room Room { get; set; }
+        public List<Room> Rooms { get; set; }
     }
 }

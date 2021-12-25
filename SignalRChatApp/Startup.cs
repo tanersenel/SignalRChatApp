@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using SignalRChatApp.Data;
+using SignalRChatApp.Hubs;
 using SignalRChatApp.Repositories;
 using SignalRChatApp.Settings;
 using System;
@@ -31,6 +32,7 @@ namespace SignalRChatApp
             services.AddSingleton<IChatDatabaseSettings>(sp => sp.GetRequiredService<IOptions<ChatDatabaseSettings>>().Value);
             services.AddTransient<IChatContext, ChatContext>();
             services.AddTransient<IChatRepository, ChatRepository>();
+            services.AddSignalR();
 
             services.AddControllersWithViews();
         }
@@ -52,11 +54,13 @@ namespace SignalRChatApp
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseCookiePolicy();
 
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<ChatHub>("/chatHub");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Chat}/{action=Index}/{id?}");

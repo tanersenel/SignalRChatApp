@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using SignalRChatApp.Data;
 using SignalRChatApp.Entities;
 using SignalRChatApp.Models;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SignalRChatApp.Extensions;
 
 namespace SignalRChatApp.Repositories
 {
@@ -16,48 +18,44 @@ namespace SignalRChatApp.Repositories
         {
             _context = context;
         }
-        public async Task CreateMessage(Message message)
+        public async Task<bool> CreateMessage(Message message,string roomId)
         {
-           await _context.Messages.InsertOneAsync(message);
+            var builder = Builders<Room>.Filter;
+            var filter = builder.Eq(x => x.id, ObjectId.Parse(roomId));
+
+            var update = Builders<Room>.Update
+                .AddToSet(x => x.Messages, message);
+            var updateResult = await _context.Rooms.UpdateOneAsync(filter, update);
+            return updateResult.IsAcknowledged && updateResult.ModifiedCount > 0;
+
+
         }
 
         public async Task CreateRoom(string name)
         {
-            var room = new Room { Name = name };
+            var room = new Room { Name = name, Messages = new List<Message>() { new Message {UserName="Admin", MessageText = "Welcome To " + name, Time = DateTime.Now, id = ObjectId.GenerateNewId() } } };
             await _context.Rooms.InsertOneAsync(room);
         }
 
         public async Task<bool> DeleteRoom(string id)
         {
-            var mfilter = Builders<Message>.Filter.Eq(c => c.RoomId, id);
-            await _context.Messages.DeleteOneAsync(mfilter);
-
-            var filter = Builders<Room>.Filter.Eq(c => c.id, id);
+           
+            var filter = Builders<Room>.Filter.Eq(c => c.id,ObjectId.Parse(id));
             DeleteResult deleteResult = await _context.Rooms.DeleteOneAsync(filter);
             return deleteResult.IsAcknowledged && deleteResult.DeletedCount > 0;
         }
-
-        public async Task<IEnumerable<Message>> GetRoomMessages(string roomId)
-        {
-            return await _context.Messages.Find(c => c.RoomId == roomId).ToListAsync();
-        }
+       
 
         public async Task<IEnumerable<Room>> GetRooms()
         {
             return await _context.Rooms.Find(c => true).ToListAsync();
         }
 
-        public async Task<RoomViewModel> GetRoomWithMessages(string roomId)
+        public async Task<Room> GetRoomWithMessages(string roomId)
         {
-            var messages=  await _context.Messages.Find(c => c.RoomId == roomId).ToListAsync();
-            var room =await _context.Rooms.Find(c => c.id == roomId).FirstOrDefaultAsync();
-            var roomModel = new RoomViewModel
-            {
-                RoomId = room.id,
-                Name = room.Name,
-                Messages = messages
-            };
-            return roomModel;
+            var id = ObjectId.Parse(roomId);
+            var room =await _context.Rooms.Find(c => c.id == id).FirstOrDefaultAsync();
+            return room;
 
         }
     }

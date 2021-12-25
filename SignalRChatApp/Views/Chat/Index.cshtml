@@ -4,9 +4,16 @@
 }
 
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-12">
         <div class="row">
-            <h3>Join Room</h3>
+            <h3>Nickname</h3>
+        </div>
+        <div class="row nickname">
+            <input type="text" name="NickName" id="NickName" placeholder="NickName" value="@ViewBag.Username">
+            <button type="button" id="btnSetUserName" class="btn btn-danger">Save Nickname</button>
+        </div>
+        <div class="row">
+        <h3>Join Room</h3>
         </div>
         @foreach (var room in Model)
         {
@@ -18,12 +25,11 @@
            
         }
     </div>
-    <div class="col-md-8">
+    <div class="col-md-12">
         <div class="row">
             <h3>Create New Room</h3>
         </div>
         <form class="chat-input" asp-controller="Chat" asp-action="CreateRoom">
-
             <input type="text" name="Name" id="message-input">
             <button type="submit" class="btn btn-danger">Create</button>
         </form>

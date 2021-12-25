@@ -10,10 +10,9 @@ namespace SignalRChatApp.Repositories
     public interface IChatRepository
     {
         Task CreateRoom(string name);
-        Task CreateMessage(Message message);
+        Task<bool> CreateMessage(Message message,string roomId);
         Task<IEnumerable<Room>> GetRooms();
-        Task<RoomViewModel> GetRoomWithMessages(string roomId);
-        Task<IEnumerable<Message>> GetRoomMessages(string roomId);
+        Task<Room> GetRoomWithMessages(string roomId);
         
         Task<bool> DeleteRoom(string id);
     }
