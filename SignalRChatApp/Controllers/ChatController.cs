@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SignalRChatApp.Models;
+using SignalRChatApp.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,15 +13,29 @@ namespace SignalRChatApp.Controllers
     public class ChatController : Controller
     {
         private readonly ILogger<ChatController> _logger;
+        private readonly IChatRepository _chatRepository;
 
-        public ChatController(ILogger<ChatController> logger)
+        public ChatController(ILogger<ChatController> logger,IChatRepository chatRepository)
         {
             _logger = logger;
+            _chatRepository = chatRepository;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var rooms = _chatRepository.GetRooms();
+            return View(rooms.Result);
+        }
+        public IActionResult JoinRoom(string id)
+        {
+            var rooms = _chatRepository.GetRooms();
+            return View(rooms);
+        }
+        [HttpPost]
+        public IActionResult CreateRoom(string name)
+        {
+            _chatRepository.CreateRoom(name);
+            return RedirectToAction("Index");
         }
 
         public IActionResult Privacy()

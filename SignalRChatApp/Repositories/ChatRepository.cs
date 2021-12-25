@@ -1,6 +1,7 @@
 ﻿using MongoDB.Driver;
 using SignalRChatApp.Data;
 using SignalRChatApp.Entities;
+using SignalRChatApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,6 +45,19 @@ namespace SignalRChatApp.Repositories
         public async Task<IEnumerable<Room>> GetRooms()
         {
             return await _context.Rooms.Find(c => true).ToListAsync();
+        }
+
+        public async Task<RoomViewModel> GetRoomWithMessages(string roomId)
+        {
+            var messages=  await _context.Messages.Find(c => c.RoomId == roomId).ToListAsync();
+            var room =await _context.Rooms.Find(c => c.id == roomId).FirstOrDefaultAsync();
+            var roomModel = new RoomViewModel
+            {
+                RoomId = room.id,
+                Name = room.Name
+            };
+            return roomModel;
+
         }
     }
 }

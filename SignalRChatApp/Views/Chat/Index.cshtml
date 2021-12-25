@@ -1,8 +1,32 @@
-﻿@{
+﻿@model IEnumerable<Room>
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row">
+    <div class="col-md-4">
+        <div class="row">
+            <h3>Join Room</h3>
+        </div>
+        @foreach (var room in Model)
+        {
+        <div class="row">
+            <a class="btn btn-primary col-md-12" asp-controller="Chat" asp-action="JoinRoom" asp-route-id="@room.id">
+                @room.Name
+            </a>
+        </div>
+           
+        }
+    </div>
+    <div class="col-md-8">
+        <div class="row">
+            <h3>Create New Room</h3>
+        </div>
+        <form class="chat-input" asp-controller="Chat" asp-action="CreateRoom">
+
+            <input type="text" name="Name" id="message-input">
+            <button type="submit" class="btn btn-danger">Create</button>
+        </form>
+    </div>
 </div>
+
