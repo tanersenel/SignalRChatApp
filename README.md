@@ -10,6 +10,8 @@ Projede Kullanılan kütüphane ve paketler
 
  - MongoDB 
  - SignalR
+ - Redis
+
 Docker üzerinden ayağa kaldırıldığında
 http://localhost:8001 adresinden erişilebilir.
 
