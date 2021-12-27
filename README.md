@@ -1,3 +1,4 @@
+
 # .Net 5 SignalR Chat Sample
 
 Proje .Net 5 Core MVC altyapısı ile SignalR kullanılarak hazırlanmış Sohbet uygulamasıdır.
@@ -14,4 +15,30 @@ Projede Kullanılan kütüphane ve paketler
 
 Docker üzerinden ayağa kaldırıldığında
 http://localhost:8001 adresinden erişilebilir.
+ 
+ Projeyi localde çalıştırırken 
+ appsettings.json dosyası aşağıdaki gibi değiştirilmelidir.
+ 
+
+    {
+      "ChatDatabaseSettings": {
+        "ConnectionString": "mongodb://localhost:27017",
+        "DatabaseName": "ChatMongoDB"
+      },
+      "ConnectionStringsCache": {
+        "Redis": "localhost:6379"
+      },
+      "Logging": {
+        "LogLevel": {
+          "Default": "Information",
+          "Microsoft": "Warning",
+          "Microsoft.Hosting.Lifetime": "Information"
+        }
+      },
+      "AllowedHosts": "*"
+    }
+
+
+ 
+ 
 
