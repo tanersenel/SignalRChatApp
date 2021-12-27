@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using SignalRChatApp.Data;
 using SignalRChatApp.Hubs;
 using SignalRChatApp.Repositories;
+using SignalRChatApp.Repositories.Interfaces;
 using SignalRChatApp.Settings;
 using System;
 using System.Collections.Generic;
@@ -32,9 +33,17 @@ namespace SignalRChatApp
             services.AddSingleton<IChatDatabaseSettings>(sp => sp.GetRequiredService<IOptions<ChatDatabaseSettings>>().Value);
             services.AddTransient<IChatContext, ChatContext>();
             services.AddTransient<IChatRepository, ChatRepository>();
+            services.AddTransient<IRedisService, RedisService>();
             services.AddSignalR();
 
             services.AddControllersWithViews();
+            services.AddDistributedRedisCache(options =>
+            {
+                options.InstanceName = "SignalRChatApp";
+                options.Configuration = Configuration.GetSection("ConnectionStringsCache:Redis").Value; 
+            });
+            services.AddSession(options => options.IdleTimeout = TimeSpan.FromMinutes(60));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,7 +64,7 @@ namespace SignalRChatApp
 
             app.UseRouting();
             app.UseCookiePolicy();
-
+            app.UseSession();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

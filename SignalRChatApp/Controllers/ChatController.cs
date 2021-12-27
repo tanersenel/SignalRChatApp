@@ -6,10 +6,12 @@ using SignalRChatApp.Entities;
 using SignalRChatApp.Hubs;
 using SignalRChatApp.Models;
 using SignalRChatApp.Repositories;
+using SignalRChatApp.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SignalRChatApp.Controllers
@@ -18,6 +20,7 @@ namespace SignalRChatApp.Controllers
     {
         private readonly ILogger<ChatController> _logger;
         private readonly IChatRepository _chatRepository;
+        
 
         public ChatController(ILogger<ChatController> logger,IChatRepository chatRepository)
         {
@@ -27,7 +30,11 @@ namespace SignalRChatApp.Controllers
 
         public IActionResult Index()
         {
-            ViewBag.Username = Request.Cookies["username"];
+           
+            HttpContext.Session.TryGetValue("username", out byte[] value);
+            string username =value!=null? Encoding.UTF8.GetString(value):"";
+
+            ViewBag.Username = username;
             var rooms = _chatRepository.GetRooms();
             return View(rooms.Result);
         }
@@ -47,9 +54,8 @@ namespace SignalRChatApp.Controllers
         }
         public IActionResult SetUserName(string username)
         {
-            CookieOptions cookie = new CookieOptions();
-            cookie.Expires = DateTime.Now.AddYears(10);
-            Response.Cookies.Append("username", username, cookie);
+            HttpContext.Session.Set("username", Encoding.UTF8.GetBytes(username));
+
             return Ok();
         }
         public IActionResult Privacy()
@@ -59,7 +65,9 @@ namespace SignalRChatApp.Controllers
         public async Task<IActionResult> SendMessage(string roomId,string message, [FromServices] IHubContext<ChatHub> chat)
         {
             roomId = roomId.Trim();
-            string username = Request.Cookies["username"];
+            HttpContext.Session.TryGetValue("username", out byte[] value);
+            string username = value != null ? Encoding.UTF8.GetString(value) : "";
+
             var msg = new Message { 
                 MessageText = message,
                 UserName = username,

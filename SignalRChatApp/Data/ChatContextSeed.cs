@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
+using ServiceStack.Redis;
 using SignalRChatApp.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,12 +11,21 @@ namespace SignalRChatApp.Data
 {
     public class ChatContextSeed
     {
-        public static void SeedData(IMongoCollection<Room> contactCollection)
+        public static void SeedData(IMongoCollection<Room> roomCollection)
         {
-            bool existContact = contactCollection.Find(c => true).Any();
+            bool existContact = roomCollection.Find(c => true).Any();
             if (!existContact)
             {
-                contactCollection.InsertManyAsync(GetConfigureRooms());
+                roomCollection.InsertManyAsync(GetConfigureRooms());
+            }
+            using (IRedisClient client = new RedisClient())
+            {
+                foreach (var room in roomCollection.AsQueryable())
+                {
+                    var cachedata = client.As<Room>();
+                    cachedata.SetValue("Room-" + room.id, room);
+                }
+                
             }
         }
 

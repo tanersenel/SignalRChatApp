@@ -6,6 +6,8 @@ $(document).ready(function () {
 
     $('#btnSetUserName').click(function () {
         var username = $('#NickName').val();
-        $.post("/Chat/SetUserName", { username: username });
+        $.post("/Chat/SetUserName", { username: username }, function (data) {
+            alert("Nickname registration successful.")
+        });
     });
 });

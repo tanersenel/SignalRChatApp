@@ -8,15 +8,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SignalRChatApp.Extensions;
+using ServiceStack.Redis;
+using SignalRChatApp.Repositories.Interfaces;
 
 namespace SignalRChatApp.Repositories
 {
     public class ChatRepository : IChatRepository
     {
         private readonly IChatContext _context;
-        public ChatRepository(IChatContext context)
+        private readonly IRedisService _redisService;
+        public ChatRepository(IChatContext context, IRedisService redisService)
         {
             _context = context;
+             _redisService = redisService;
         }
         public async Task<bool> CreateMessage(Message message,string roomId)
         {
@@ -26,8 +30,17 @@ namespace SignalRChatApp.Repositories
             var update = Builders<Room>.Update
                 .AddToSet(x => x.Messages, message);
             var updateResult = await _context.Rooms.UpdateOneAsync(filter, update);
-            return updateResult.IsAcknowledged && updateResult.ModifiedCount > 0;
+           
 
+            using (IRedisClient client = new RedisClient())
+            {
+                var id = ObjectId.Parse(roomId);
+                var room = await _context.Rooms.Find(c => c.id == id).FirstOrDefaultAsync();
+                var cachedata = client.As<Room>();
+                cachedata.SetValue("Room-" + room.id, room);
+
+            }
+            return updateResult.IsAcknowledged && updateResult.ModifiedCount > 0;
 
         }
 
@@ -35,6 +48,14 @@ namespace SignalRChatApp.Repositories
         {
             var room = new Room { Name = name, Messages = new List<Message>() { new Message {UserName="Admin", MessageText = "Welcome To " + name, Time = DateTime.Now, id = ObjectId.GenerateNewId() } } };
             await _context.Rooms.InsertOneAsync(room);
+
+            using (IRedisClient client = new RedisClient())
+            {
+                
+                    var cachedata = client.As<Room>();
+                    cachedata.SetValue("Room-" + room.id, room);
+                
+            }
         }
 
         public async Task<bool> DeleteRoom(string id)
@@ -48,14 +69,18 @@ namespace SignalRChatApp.Repositories
 
         public async Task<IEnumerable<Room>> GetRooms()
         {
-            return await _context.Rooms.Find(c => true).ToListAsync();
+            const string cacheKey = "Room-*";
+            var redisdata =  _redisService.GetAll(cacheKey);
+            return redisdata;
+
         }
 
         public async Task<Room> GetRoomWithMessages(string roomId)
         {
-            var id = ObjectId.Parse(roomId);
-            var room =await _context.Rooms.Find(c => c.id == id).FirstOrDefaultAsync();
-            return room;
+            string cacheKey = "Room-" + roomId;
+            var redisdata = _redisService.GetById(cacheKey);
+
+            return redisdata;
 
         }
     }
