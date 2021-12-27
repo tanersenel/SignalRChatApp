@@ -1,4 +1,5 @@
-﻿using SignalRChatApp.Entities;
+﻿using ServiceStack.Redis;
+using SignalRChatApp.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -30,9 +30,9 @@ namespace SignalRChatApp.Repositories
             var update = Builders<Room>.Update
                 .AddToSet(x => x.Messages, message);
             var updateResult = await _context.Rooms.UpdateOneAsync(filter, update);
-           
 
-            using (IRedisClient client = new RedisClient())
+
+            using (IRedisClient client = new RedisManagerPool(GlobalExtensions.GetConnectionStrings()).GetClient())
             {
                 var id = ObjectId.Parse(roomId);
                 var room = await _context.Rooms.Find(c => c.id == id).FirstOrDefaultAsync();
@@ -49,7 +49,7 @@ namespace SignalRChatApp.Repositories
             var room = new Room { Name = name, Messages = new List<Message>() { new Message {UserName="Admin", MessageText = "Welcome To " + name, Time = DateTime.Now, id = ObjectId.GenerateNewId() } } };
             await _context.Rooms.InsertOneAsync(room);
 
-            using (IRedisClient client = new RedisClient())
+            using (IRedisClient client = new RedisManagerPool(GlobalExtensions.GetConnectionStrings()).GetClient())
             {
                 
                     var cachedata = client.As<Room>();

@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using Microsoft.Extensions.Configuration;
+using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,11 @@ namespace SignalRChatApp.Extensions
                 var message = string.Format("'{0}' is not a valid 24 digit hex string.", s);
                 throw new FormatException(message);
             }
+        }
+        public static string GetConnectionStrings()
+        {
+            var AppName = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("ConnectionStringsCache")["Redis"];
+            return AppName;
         }
     }
 }

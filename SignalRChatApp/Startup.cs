@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using ServiceStack.Redis;
 using SignalRChatApp.Data;
 using SignalRChatApp.Hubs;
 using SignalRChatApp.Repositories;
@@ -42,7 +43,11 @@ namespace SignalRChatApp
                 options.InstanceName = "SignalRChatApp";
                 options.Configuration = Configuration.GetSection("ConnectionStringsCache:Redis").Value; 
             });
+            services.AddScoped<IRedisClientsManager>(c => new RedisManagerPool(Configuration.GetSection("ConnectionStringsCache:Redis").Value));
+            services.AddScoped<IRedisClient>(c => c.GetService<IRedisClientsManager>().GetClient());
             services.AddSession(options => options.IdleTimeout = TimeSpan.FromMinutes(60));
+
+            services.Configure<ConnectionStringsCache>(Configuration.GetSection("ConnectionStringsCache"));
 
         }
 

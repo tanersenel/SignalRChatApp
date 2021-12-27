@@ -3,6 +3,10 @@ version: '3.4'
 services:
   signalrdb:
    image: mongo
+  redis: 
+   image: redis
+   ports:
+    - "6379:6379" 
   signalrchatapp:
     image: ${DOCKER_REGISTRY-}signalrchatapp
     build:

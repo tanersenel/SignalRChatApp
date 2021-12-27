@@ -7,16 +7,32 @@ services:
    volumes:
     - ${WEBAPP_STORAGE_HOME}/site:/data/db
     #- ./data:/data/db
+   networks: 
+    - my-network
    ports:
     - "27017:27017"
+  redis:
+   container_name: redis
+   restart: always
+   networks: 
+    - my-network
+   ports:
+    - "6379:6379"
   signalrchatapp:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
       - "ChatDatabaseSettings:ConnectionString=mongodb://signalrdb:27017"
+      - "ConnectionStringsCache:Redis=abcd:6379"
     depends_on:
         - signalrdb
+        - redis
     ports:
       - "8001:80"
+    networks: 
+     - my-network
     volumes:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+networks:
+  my-network:
+   name: my-global-net

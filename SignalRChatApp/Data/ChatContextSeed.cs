@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using ServiceStack.Redis;
 using SignalRChatApp.Entities;
+using SignalRChatApp.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace SignalRChatApp.Data
             {
                 roomCollection.InsertManyAsync(GetConfigureRooms());
             }
-            using (IRedisClient client = new RedisClient())
+            using (IRedisClient client = new RedisManagerPool(GlobalExtensions.GetConnectionStrings()).GetClient())
             {
                 foreach (var room in roomCollection.AsQueryable())
                 {
